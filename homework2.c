@@ -1,8 +1,13 @@
 /*************************************
  * Homework 2 - Local Network Checker
  *
- * This program takes two IP addresses, and determines
- * if they are on the same local network.
+ * This program takes two IP addresses, and determines if they are on the same local 
+ * network. If the addresses are longer than 12 digits and 3 periods (i.e. 123.456.789.100),
+ * the excess is not read.
+ *
+ * I was shooting for stability, as my initial attempts weren't very robust with input.
+ * This program should be able to accept erroneous input without complaint, but it will
+ * not be accurate with it's results.
  *
  * Author: 	Garrett Bates
  * Email:	gbates1@kent.edu 
@@ -20,14 +25,14 @@
 // What you need: two integers and a mask.
 // What you get: A char containing either 1 (equal) or 0 (not equal).
 char bitcompare(int first_ip, int second_ip, int subnet_mask) {
-	int c1, c2;
-	char result; // Used this in place of bool variable. Does the same thing.
+	int c1, c2;			// Stores the results of the mask application.
+	char result; 			// Used this in place of bool variable. Does the same thing.
 
-	c1 = first_ip & subnet_mask;
-	c2 = second_ip & subnet_mask;
+	c1 = first_ip & subnet_mask;	// Compare the first IP to subnet mask.
+	c2 = second_ip & subnet_mask;	// Compare the second IP to subnet mask.
 
-	if (c1 == c2) result = 1;
-	else result = 0;
+	if (c1 == c2) result = 1;	// If both comparisons yield the same value, return true.
+	else result = 0;		// Otherwise, return false.
 
 	return result; 
 }
@@ -49,13 +54,13 @@ unsigned int address_parser(char *input) {
 	}
 
 	int j;
-	for(j = 0; j < i; j++) {
-		shift = shift - 8;
-		numba[j] = numba[j]<<shift;
-		ip = ip + numba[j];
+	for(j = 0; j < i; j++) {	// Iterates through the integers and shifts them appropriately
+		shift = shift - 8;	// Shift numba[0] 32 left, shift numba[1] 24 left, etc.
+		numba[j] = numba[j]<<shift; // Does the actual shifting
+		ip = ip + numba[j];	// Adds each value together. Serves the same purpose as bitwise or.
 	}
 
-	return ip;
+	return ip;			// Return the integer representation
 }
 
 int main(){
@@ -65,14 +70,17 @@ int main(){
 	size_t *size = malloc(16);
 
 	printf("Enter your subnet mask: ");
-	getline(&address, size, stdin);
+	fflush(stdin);			// Flush stdin of any lingering input.
+	getline(&address, size, stdin);	// Reads input.
 	submask = address_parser(address);
 
 	printf("Enter your first IP address: ");
+	fflush(stdin);
         getline(&address, size, stdin);
 	ip1 = address_parser(address);
 
 	printf("Enter your second IP address: ");
+	fflush(stdin);
         getline(&address, size, stdin);
 	ip2 = address_parser(address);
 
