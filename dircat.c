@@ -1,3 +1,23 @@
+/*************************************
+ * Homework 3 - dircat: Directory Entry Concatenator.
+ *
+ * This program takes a directory as a parameter, then iterates through
+ * every "directory entry", or file, and prints the regular files. 
+ *
+ * Binary files are discovered by reading the first TEE_BUFF_SIZE bytes and counts
+ * the number of non-ASCII characters in the buffer. If that number is larger than
+ * IS_BINARY, the file contents are not printed to stdout. This is not necessarily
+ * guaranteed to weed out binary files and print text files only, but it is fairly
+ * reliable in distinguishing between the two.
+ *
+ *
+ * Author:      Garrett Bates
+ * Email:       gbates1@kent.edu
+ * Repository:  https://cs43203.dstan.net/gbates1/gbatesrepo.git
+ *
+ *************************************
+ */
+
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -14,9 +34,7 @@ void cat_file(char *filename) {
 	int count = 0, i;			// Used for determining if the file is binary.
 	FILE *input = fopen(filename,"r");	// File pointer pointing to the file to print.
 
-	printf("%s:\n\n",filename);	// Print filename before outputting contents.
-
-	// Check to see if file is binary by reading the first 4096 bytes
+	// Check to see if file is binary by reading the first TEE_BUFF_SIZE bytes
 	// and determining if 10 or more fall out of the 0 - 127 ASCII range.
 	// If it is, return to caller.
 	numread = fread(buff, sizeof(unsigned char),  TEE_BUFF_SIZE, input);
@@ -40,7 +58,7 @@ void cat_file(char *filename) {
 	}
 
 	fclose(input);		// Close file stream when finished.
-
+	printf("\n\n");
 }
 
 void lsd(char *path) {
